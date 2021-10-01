@@ -1,0 +1,28 @@
+$attrColor: #e6531d;
+
+
+.unit-info {
+
+  .name {
+    font-weight: bold;
+    text-transform: uppercase;
+  }
+
+  .attrs {
+    & div > span {
+      border: 2px solid $attrColor;
+      margin-right: 10px;
+      font-weight: bold;
+
+      & > span {
+        width: 35px;
+        display: inline-block;
+        text-align: center;
+
+        &:first-child {
+          background-color: $attrColor;
+        }
+      }
+    }
+  }
+}
