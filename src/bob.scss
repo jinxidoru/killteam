@@ -1,26 +1,96 @@
-$attrColor: #e6531d;
+$ktOrange: #e6531d;
+$ktGrey: #aaa;
 
 
 .unit-info {
+  margin: 10px;
 
   .name {
-    font-weight: bold;
+    font-family: impact;
     text-transform: uppercase;
+    padding: 4px;
+    font-size: 120%;
+
+    span { font-size: 60%; }
+
+    .faction {
+      color: $ktOrange;
+      padding-left: 10px;
+    }
+
+    .keywords {
+      color: #666;
+    }
+  }
+
+  .bottom {
+    min-height: 100px;
   }
 
   .attrs {
-    & div > span {
-      border: 2px solid $attrColor;
-      margin-right: 10px;
-      font-weight: bold;
+    float: left;
+    height: 100%;
 
-      & > span {
-        width: 35px;
-        display: inline-block;
+    display: grid;
+    grid-template-columns: 35px 35px 35px 35px;
+    padding: 2px;
+    text-align: center;
+    font-family: impact;
+
+    div {
+      border: 2px solid $ktOrange;
+      margin-top: 1px;
+      margin-bottom: 1px;
+
+      &:nth-child(2n+1) {
+        background: $ktOrange;
+        -webkit-print-color-adjust: exact;
+      }
+
+      &:nth-child(2n) {
+        margin-right: 2px;
+      }
+    }
+  }
+
+  .loadout {
+    width: 100%;
+    height: 100%;
+    padding-top: 4px;
+    -webkit-print-color-adjust: exact;
+
+    & > div {
+      display: inline-block;
+      margin-left: 3px;
+    }
+
+    .weapon {
+      display: grid;
+      grid-template-columns: repeat(8, auto);
+
+      .wname {
+        grid-column: 1 / 9;
+      }
+
+      & > div:not(.wname) {
+        border-top: 1px solid $ktGrey;
+        border-bottom: 1px solid $ktGrey;
         text-align: center;
 
-        &:first-child {
-          background-color: $attrColor;
+        &:nth-child(2n) {
+          font-weight: bold;
+          background: $ktGrey;
+          width: 35px;
+        }
+
+        &:nth-child(2n+1) {
+          min-width: 23px;
+          padding-left: 6px;
+          padding-right: 6px;
+        }
+
+        &:last-child {
+          border-right: 1px solid $ktGrey;
         }
       }
     }
