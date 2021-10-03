@@ -1,32 +1,5 @@
-
-
-interface Weapon {
-  name: string;
-  type: "r"|"m";
-  atk: number;
-  ws: number;
-  dam: number;
-  cdam: number;
-  sr: string[];
-  cr: string[];
-}
-
-interface Unit {
-  name: string;
-  faction: string;
-  keywords: string[];
-  move: number;
-  apl: number;
-  ga: number;
-  df: number;
-  sv: number;
-  hp: number;
-  weapons: Weapon[];
-}
-
-interface Dict<T> {
-  [name:string]: T
-}
+import {Unit,Dict} from './types'
+import {Compendium} from './compendium'
 
 
 export function UnitInfo({unit}:{unit:Unit}) {
@@ -76,30 +49,6 @@ export function UnitInfo({unit}:{unit:Unit}) {
 
 
 export function TeamRoster() {
-
-  var bolt_rifle:Weapon = {
-    name: "Auto bolt rifle", type:"r", atk:4, ws:3, dam:3, cdam:4, sr:["Ceaseless"], cr:[]
-  };
-
-  var fists:Weapon = {
-    name: "Fists", type:"m", atk:4, ws:3, dam:3, cdam:4, sr:[], cr:[]
-  }
-
-  var units:Unit[] = [
-    { name: "Intercessor (Warrior)", faction: "space marine",
-      keywords: ["imperium", "adeptus astartes", "::chapter", "primaris", "leader",
-        "intercessor", "sergeant"],
-      move:3, apl:3, ga:1, df:3, sv:3, hp:13,
-      weapons: [bolt_rifle,fists] }
-  ];
-
-
-  return <div>
-    <UnitInfo unit={units[0]} />
-    <UnitInfo unit={units[0]} />
-    <UnitInfo unit={units[0]} />
-    <UnitInfo unit={units[0]} />
-    <UnitInfo unit={units[0]} />
-    <UnitInfo unit={units[0]} />
-  </div>
+  var units = Compendium;
+  return <div>{ units.map(u => (<UnitInfo unit={u} />)) }</div>
 }
