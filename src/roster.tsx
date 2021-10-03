@@ -24,9 +24,13 @@ interface Unit {
   weapons: Weapon[];
 }
 
+interface Dict<T> {
+  [name:string]: T
+}
+
 
 export function UnitInfo({unit}:{unit:Unit}) {
-  var kw_replacement = {"chapter": "Adulators"};
+  var kw_replacement:Dict<string> = {"chapter": "Adulators"};
 
   var keywords = unit.keywords.map(kw => {
     if (kw.startsWith("::")) {
@@ -51,52 +55,23 @@ export function UnitInfo({unit}:{unit:Unit}) {
           <div>W</div><div>{unit.hp}</div>
         </div>
         <div className="loadout"><div>
-          {unit.weapons.map(w => (
-              <div className="weapon">
-                <div className="wname">{w.name}</div>
-                <div>A</div>
-                <div>{w.atk}</div>
-                <div>{w.type === 'r' ? 'WS' : 'BS'}</div>
-                <div>{w.ws}+</div>
-                { w.sr.length ? (<><div>SR</div><div>{w.sr.join(', ')}</div></>) : null }
-                { w.cr.length ? (<><div>!</div><div>{w.cr.join(', ')}</div></>) : null }
-              </div>
-          ))}
+          <div className="weapons">
+            <div></div><div>NAME</div><div>A</div><div>BS/WS</div>
+            <div>D</div><div>SR</div><div>!</div>
+            {unit.weapons.map(w => (<>
+              <div>{w.type}</div>
+              <div>{w.name}</div>
+              <div>{w.atk}</div>
+              <div>{w.ws}+</div>
+              <div>{w.dam}/{w.cdam}</div>
+              <div>{w.sr.length ? w.sr.join(',') : '-'}</div>
+              <div>{w.cr.length ? w.cr.join(',') : '-'}</div>
+            </>))}
+          </div>
         </div></div>
       </div>
     </div>
   )
-
-
-  /*
-  return (
-    <div className="unit-info">
-      <div className="name">{unit.name}</div>
-      <div className="attrs">
-        <div>
-          <span><span>M</span><span>{unit.move}</span></span>
-          <span><span>APL</span><span>{unit.apl}</span></span>
-        </div>
-        <div>
-        </div>
-        <div>
-        </div>
-      </div>
-      {unit.weapons.map(w => (
-        <div className="weapon">
-          <div className="name">{w.name}</div>
-          <div className="attrs">
-            <span><span>A</span><span>{w.atk}</span></span>
-            <span><span>{w.type == 'r' ? 'WS' : 'BS'}</span><span>{unit.ws}+</span></span>
-            <span><span>D</span><span>{w.dam}/{w.cdam}</span></span>
-            <span><span>SR</span><span>{w.sr.join(', ')}</span></span>
-            <span><span>!</span><span>{w.cr.join(', ')}</span></span>
-          </div>
-        </div>
-      ))}
-    </div>
-  )
-  */
 }
 
 

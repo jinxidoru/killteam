@@ -94,5 +94,24 @@ $ktGrey: #aaa;
         }
       }
     }
+
+
+    font-size: 80%;
+
+    .weapons {
+      display: grid;
+      grid-template-columns: 10px 150px 20px 40px 20px 150px 150px;
+      text-align: center;
+      font-size: 80%;
+
+      > :nth-child(-n+7) {
+        background: $ktGrey;
+        font-weight: bold;
+      }
+
+      > :nth-child(7n+2) {
+        text-align: left;
+      }
+    }
   }
 }
