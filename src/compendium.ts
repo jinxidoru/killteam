@@ -20,14 +20,20 @@ function units(faction:string, kws:string, units:I_Unit[]) : Unit[] {
       if (w[0] === 1 || w[0] === 0) {
         return {
           name:w[1], type: (!w[0] ? 'r' : 'm'), atk:w[2], ws:w[3], dam:w[4], cdam:w[5],
-          sr: (w[6]||"").split(/, /g), cr: (w[7]||"").split(/, /g)
+          sr: w[6] || null, cr: w[7] || null
         }
       } else {
         return null as any;
       }
     }).filter(a => a)
 
-    return {name,faction,keywords,move,apl,ga,df,sv,hp,weapons};
+    var actions = (extra.filter(x => x[0] === 3) as I_Action[])
+      .map(a => ({ name: a[1], cost: a[2], descr: a[3] }));
+
+    var abilities = (extra.filter(x => x[0] === 2) as I_Ability[])
+      .map(a => ({name: a[1], descr: a[2] || ""}));
+
+    return {name,faction,keywords,move,apl,ga,df,sv,hp,weapons,actions,abilities};
   });
 }
 
@@ -44,7 +50,8 @@ function tau() : Unit[] {
       [0, "Pulse blaster | Long range", 4, 4, 3, 4],
       [0, "Pulse carbine", 4, 4, 4, 5],
       [0, "Pulse rifle", 4, 4, 4, 5],
-      [1, "Gun butt", 3, 5, 2, 3]
+      [1, "Gun butt", 3, 5, 2, 3],
+      markerlight, camo_field
     ],[
       "Fire warrior shas'ui", 3, 2, 1, 3, 4, 8, "leader, fire warrior, shas'ui",
       [0, "Pulse blaster | Close range", 4, 3, 4, 5, 'Rng @5, AP1'],

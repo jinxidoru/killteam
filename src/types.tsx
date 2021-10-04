@@ -6,8 +6,8 @@ export interface Weapon {
   ws: number;
   dam: number;
   cdam: number;
-  sr: string[];
-  cr: string[];
+  sr: string|null;
+  cr: string|null;
 }
 
 export interface Unit {
@@ -21,6 +21,15 @@ export interface Unit {
   sv: number;
   hp: number;
   weapons: Weapon[];
+  actions: {
+    name: string;
+    cost: number;
+    descr: string;
+  }[]
+  abilities: {
+    name: string;
+    descr: string;
+  }[]
 }
 
 export interface Dict<T> {

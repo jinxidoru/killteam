@@ -2,116 +2,109 @@ $ktOrange: #e6531d;
 $ktGrey: #aaa;
 
 
-.unit-info {
-  margin: 10px;
+.controls {
+  padding: 10px;
+  margin-bottom: 10px;
+  border-bottom: 2px solid $ktOrange;
+  @media print { display: none; }
+}
+
+
+@mixin kt-icon($image) {
+  width: 14px;
+  height: 14px;
+  background-image: url($image);
+  background-size: cover;
+  display: inline-block;
+  margin-right: 4px;
+}
+
+
+
+.kt-unit-info2 {
+  -webkit-print-color-adjust: exact;
+  width: 4in;
+  margin-bottom: 30px;
+  margin-left: 5px;
+  break-inside: avoid;
+
+  & > div {
+    padding-left: 5px;
+    width: 100%;
+  }
 
   .name {
+    background: $ktOrange;
     font-family: impact;
+    color: white;
+    font-size: 110%;
     text-transform: uppercase;
-    padding: 4px;
-    font-size: 120%;
-
-    span { font-size: 60%; }
-
-    .faction {
-      color: $ktOrange;
-      padding-left: 10px;
-    }
-
-    .keywords {
-      color: #666;
-    }
   }
 
-  .bottom {
-    min-height: 100px;
-  }
-
-  .attrs {
-    float: left;
-    height: 100%;
-
-    display: grid;
-    grid-template-columns: 35px 35px 35px 35px;
-    padding: 2px;
-    text-align: center;
-    font-family: impact;
-
-    div {
-      border: 2px solid $ktOrange;
-      margin-top: 1px;
-      margin-bottom: 1px;
-
-      &:nth-child(2n+1) {
-        background: $ktOrange;
-        -webkit-print-color-adjust: exact;
-      }
-
-      &:nth-child(2n) {
-        margin-right: 2px;
-      }
-    }
-  }
-
-  .loadout {
-    width: 100%;
-    height: 100%;
-    padding-top: 4px;
-    -webkit-print-color-adjust: exact;
-
-    & > div {
-      display: inline-block;
-      margin-left: 3px;
-    }
-
-    .weapon {
-      display: grid;
-      grid-template-columns: repeat(8, auto);
-
-      .wname {
-        grid-column: 1 / 9;
-      }
-
-      & > div:not(.wname) {
-        border-top: 1px solid $ktGrey;
-        border-bottom: 1px solid $ktGrey;
-        text-align: center;
-
-        &:nth-child(2n) {
-          font-weight: bold;
-          background: $ktGrey;
-          width: 35px;
-        }
-
-        &:nth-child(2n+1) {
-          min-width: 23px;
-          padding-left: 6px;
-          padding-right: 6px;
-        }
-
-        &:last-child {
-          border-right: 1px solid $ktGrey;
-        }
-      }
-    }
-
-
+  .keywords {
+    background: lighten($ktOrange,30%);
     font-size: 80%;
+    font-style: italic;
+    text-transform: uppercase;
+  }
 
-    .weapons {
-      display: grid;
-      grid-template-columns: 10px 150px 20px 40px 20px 150px 150px;
+  .info {
+    .topline {
       text-align: center;
+    }
+
+    .stats {
+      padding-top: 2px;
+      color: #666;
+      b {
+        color: black;
+      }
+    }
+  }
+
+  .weapon {
+    position: relative;
+
+    .wname {
+      position: absolute;
+      top: 0px;
+      left: 0px;
+    }
+
+    .stats {
+      text-align: right;
+    }
+  }
+
+  .sr {
+    padding-left: 10px;
+  }
+
+  .wname {
+    .r {
+      @include kt-icon("ranged.png");
+    }
+    .m {
+      @include kt-icon("melee.png");
+    }
+  }
+
+  .i-action {
+    @include kt-icon("action.png");
+  }
+
+  .i-ability {
+    @include kt-icon("ability.png");
+  }
+
+  .extra {
+    text-indent: -30px;
+    margin-left: 30px;
+
+    .descr {
+      font-style: italic;
       font-size: 80%;
-
-      > :nth-child(-n+7) {
-        background: $ktGrey;
-        font-weight: bold;
-      }
-
-      > :nth-child(7n+2) {
-        text-align: left;
-      }
+      color: #666;
     }
   }
 }
