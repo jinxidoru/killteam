@@ -4,6 +4,12 @@ import {useState,useRef} from 'react'
 import * as ktlib from './ktlib'
 
 
+const mov1 = (<span className="ktg-m1" />)
+const mov2 = (<span className="ktg-m2" />)
+const mov3 = (<span className="ktg-m4" />)
+const mov6 = (<span className="ktg-m6" />)
+
+
 
 function useState2<T>(init:T, onChange: (_:T) => void) : [T,(_:T) => void] {
   const [val,setVal] = useState(init);
@@ -168,20 +174,30 @@ function DataCard(props:{
     return !a.on_weapon || has_sr(a.name);
   });
 
+  // replace special rules
   return (
     <div className="kt-unit-info">
       <button className="edit" onClick={props.onEdit}>EDIT</button>
       <div className="name">{conf.count ? `( ${conf.count} ) ` : ''}&nbsp;{unit.name}</div>
       <div className="keywords"><b>{unit.faction}</b>{keywords}</div>
       <div className="info">
-        <div className="stats topline"><b>M</b> {unit.move} <b>APL</b> {unit.apl} <b>GA</b> {unit.ga} <b>DF</b> {unit.df} <b>SV</b> {unit.sv}+ <b>W</b> {unit.hp}</div>
+        <div className="stats topline"><b>M</b> {unit.move}{mov2} <b>APL</b> {unit.apl} <b>GA</b> {unit.ga} <b>DF</b> {unit.df} <b>SV</b> {unit.sv}+ <b>W</b> {unit.hp}</div>
 
         {weapons.map((w,n) => (<div key={n} className="weapon">
           <div className="wname"><div className={w.type} />{w.name} &nbsp;&nbsp;</div>
           <div className="stats ">
             <b>A</b> {w.atk} <b>{w.type === 'r' ? 'BS' : 'WS'}</b> {w.ws}+ <b>D</b> {w.dam}/{w.cdam}
             <br/>
-            {!w.sr ? null : (<><b>SR</b> {w.sr} </>)}
+            {!w.sr ? null : (<><b>SR</b> </>)}
+            {[...(w.sr||"").matchAll(/([^@]+|@.)/g)].map(([x]) => {
+              if (x[0] === '@') {
+                let clazz= `ktg-m${x[1]}`
+                console.log(clazz)
+                return (<span className={clazz} />)
+              } else {
+                return (<span>{x}</span>)
+              }
+            })}
             {!w.cr ? null : (<><b>!</b> {w.cr} </>)}
           </div>
         </div>))}

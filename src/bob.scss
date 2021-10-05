@@ -250,3 +250,31 @@ $ktGrey: #aaa;
 }
 
 
+.ktg-m1 {
+  color: black;
+  &::before {
+    content: "▲";
+  }
+}
+
+.ktg-m2 {
+  &::before {
+    content: "○";
+  }
+}
+
+.ktg-m3 {
+  color: blue;
+  &::before {
+    content: "■";
+  }
+}
+
+.ktg-m6 {
+  color: red;
+  &::before {
+    content: "⬟";
+  }
+}
+
+

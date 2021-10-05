@@ -1,1 +1,3 @@
-- replace distance markers
+
+
+- add death guard

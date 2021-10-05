@@ -53,7 +53,7 @@ function tau() {
   return faction("T'au Empire", 'hunter cadre', 'sept', "t'au, <>", [
     [
       "Fire warrior shas'la", 3, 2, 1, 3, 4, 7, "fire warrior, shas'la",
-      [0, "Pulse blaster | Close range", 4, 4, 4, 5, 'Rng @5, AP1'],
+      [0, "Pulse blaster | Close range", 4, 4, 4, 5, 'Rng @6, AP1'],
       [0, "Pulse blaster | Long range", 4, 4, 3, 4],
       [0, "Pulse carbine", 4, 4, 4, 5],
       [0, "Pulse rifle", 4, 4, 4, 5],
@@ -61,7 +61,7 @@ function tau() {
       markerlight, camo_field
     ],[
       "Fire warrior shas'ui", 3, 2, 1, 3, 4, 8, "leader, fire warrior, shas'ui",
-      [0, "Pulse blaster | Close range", 4, 3, 4, 5, 'Rng @5, AP1'],
+      [0, "Pulse blaster | Close range", 4, 3, 4, 5, 'Rng @6, AP1'],
       [0, "Pulse blaster | Long range", 4, 3, 3, 4],
       [0, "Pulse carbine", 4, 3, 4, 5],
       [0, "Pulse rifle", 4, 3, 4, 5],
@@ -84,13 +84,13 @@ function tau() {
     ],[
       "Stealth battlesuit shas'ui", 3, 2, 1, 3, 3, 10, "fly, stealth battlesuit, shas'ui",
       [0, 'Burst cannon', 6, 4, 3, 4, 'Ceaseless, Fusillade'],
-      [0, 'Fusion blaster', 4, 4, 6, 3, 'Rng @5, AP2', 'MW4'],
+      [0, 'Fusion blaster', 4, 4, 6, 3, 'Rng @6, AP2', 'MW4'],
       [1, 'Fists', 4, 5, 2, 3],
       camo_field
     ],[
       "Stealth battlesuit shas'vre", 3, 2, 1, 3, 3, 11, "fly, leader, stealth battlesuit, shas'vre",
       [0, 'Burst cannon', 6, 3, 3, 4, 'Ceaseless, Fusillade'],
-      [0, 'Fusion blaster', 4, 4, 6, 3, 'Rng @5, AP2', 'MW4'],
+      [0, 'Fusion blaster', 4, 4, 6, 3, 'Rng @6, AP2', 'MW4'],
       [1, 'Fists', 4, 4, 2, 3],
       camo_field
     ]
@@ -108,11 +108,11 @@ function space_marine() {
     ],[
       'Intercessor sergeant', 3, 3, 1, 3, 3, 14, 'primaris, leader, intercessor, sergeant',
       [0, 'Auto bolt rifle', 4, 2, 3, 4, 'Ceaseless'],
-      [0, 'Bolt pistol', 4, 2, 3, 4, 'Rng @5'],
+      [0, 'Bolt pistol', 4, 2, 3, 4, 'Rng @6'],
       [0, 'Bolt rifle', 4, 2, 3, 4, '', 'P1'],
-      [0, 'Hand flamer', 4, 2, 2, 2, 'Rng @5, Torrent @3'],
-      [0, 'Plasma Pistol | Standard', 4, 2, 5, 6, 'Rng @5, AP1'],
-      [0, 'Plasma Pistol | Supercharge', 4, 2, 5, 6, 'Rng @5, AP2, Hot'],
+      [0, 'Hand flamer', 4, 2, 2, 2, 'Rng @6, Torrent @1'],
+      [0, 'Plasma Pistol | Standard', 4, 2, 5, 6, 'Rng @6, AP1'],
+      [0, 'Plasma Pistol | Supercharge', 4, 2, 5, 6, 'Rng @6, AP2, Hot'],
       [0, 'Stalker bolt rifle', 4, 2, 3, 4, 'Heavy, A:1'],
       [1, 'Chainsword', 4, 3, 4, 5],
       [1, 'Fists', 4, 3, 3, 4],
@@ -133,15 +133,15 @@ function orks() {
     [
       'Boy (fighter)', 3, 2, 1, 3, 5, 10, 'boy, fighter',
       [0, 'Shoota', 4, 5, 3, 4],
-      [0, 'Slugga', 4, 5, 3, 4, 'Rng @5'],
+      [0, 'Slugga', 4, 5, 3, 4, 'Rng @6'],
       [1, 'Choppa', 4, 3, 4, 5],
       [1, 'Fists', 3, 3, 3, 4],
     ],[
       'Boss Nob', 3, 2, 1, 3, 4, 13, 'leader, boy, boss nob',
       [0, 'Kombi-rokkit', 5, 5, 4, 5, 'Kombi*, Limited, AP1', 'Splash 1'],
-      [0, 'Kombi-skorcha', 6, 2, 2, 2, 'Kombi*, Limtied, Rng @5, Torrent @1'],
+      [0, 'Kombi-skorcha', 6, 2, 2, 2, 'Kombi*, Limtied, Rng @6, Torrent @1'],
       [0, 'Shoota', 4, 5, 3, 4, _, _, kombi[1]],
-      [0, 'Slugga', 4, 5, 3, 4, 'Rng @5'],
+      [0, 'Slugga', 4, 5, 3, 4, 'Rng @6'],
       [1, 'Big choppa', 4, 2, 5, 6],
       [1, 'Choppa', 4, 2, 4, 5],
       [1, 'Fists', 3, 2, 3, 4],
@@ -155,21 +155,21 @@ function orks() {
       [1, 'Fists', 3, 3, 3, 4],
     ],[
       'Gretchin', 3, 2, 2, 3, 6, 5, 'boy, gretchin',
-      [0, 'Gretchin blasta', 3, 4, 2, 3, 'Rng @5'],
+      [0, 'Gretchin blasta', 3, 4, 2, 3, 'Rng @6'],
       [1, 'Gretchin knife', 3, 5, 1, 2],
       runt,
     ],[
       'Clan kommando (fighter)', 3, 2, 1, 3, 5, 10, 'clan kommando, fighter',
-      [0, 'Slugga', 4, 5, 3, 4, 'Rng @5'],
+      [0, 'Slugga', 4, 5, 3, 4, 'Rng @6'],
       [1, 'Choppa', 4, 3, 4, 5],
     ],[
       'Clan kommando nob', 3, 2, 1, 3, 4, 13, 'leader, clan kommando, kommando nob',
-      [0, 'Slugga', 4, 4, 3, 4, 'Rng @5'],
+      [0, 'Slugga', 4, 4, 3, 4, 'Rng @6'],
       [1, 'Choppa', 4, 2, 4, 5],
       [1, 'Power klaw', 4, 3, 5, 7, 'Brutal'],
     ],[
       'Burna boy', 3, 2, 1, 3, 5, 10, 'speshulist, burna boy',
-      [0, 'Burna', 5, 2, 2, 2, 'Rng @5, Torrent @1'],
+      [0, 'Burna', 5, 2, 2, 2, 'Rng @6, Torrent @1'],
       [1, 'Fists', 3, 3, 3, 4],
     ],[
       'Loota', 3, 2, 1, 3, 5, 10, 'speshulist, loota',
