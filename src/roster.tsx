@@ -154,7 +154,19 @@ function DataCard(props:{
   const conf = props.conf;
   const unit = conf.unit;
   var keywords = unit.keywords.map(kw => (kw === '<>') ? `, ${props.clan}` : `, ${kw}`)
-  var weapons = unit.weapons.filter(w => (w.uname === conf.ranged || w.uname === conf.melee));
+  var primary = unit.weapons.filter(w => (w.uname === conf.ranged || w.uname === conf.melee));
+  const has_sr = (rule:string) => !!primary.find(wx => wx.sr && (wx.sr.indexOf(rule) !== -1));
+
+  // check if secondary weapons should be enabled
+  var weapons = unit.weapons.filter(w => {
+    return ((w.secondary !== null) && has_sr(w.secondary))
+        || (w.uname === conf.ranged || w.uname === conf.melee);
+  });
+
+  // check if any of the abilities are based upon the weapons
+  var abilities = unit.abilities.filter(a => {
+    return !a.on_weapon || has_sr(a.name);
+  });
 
   return (
     <div className="kt-unit-info">
@@ -167,7 +179,7 @@ function DataCard(props:{
         {weapons.map((w,n) => (<div key={n} className="weapon">
           <div className="wname"><div className={w.type} />{w.name} &nbsp;&nbsp;</div>
           <div className="stats ">
-            <b>A</b> {w.atk} <b>{w.type === 'r' ? 'BS' : 'WS'}</b> {w.ws} <b>D</b> {w.dam}/{w.cdam}
+            <b>A</b> {w.atk} <b>{w.type === 'r' ? 'BS' : 'WS'}</b> {w.ws}+ <b>D</b> {w.dam}/{w.cdam}
             <br/>
             {!w.sr ? null : (<><b>SR</b> {w.sr} </>)}
             {!w.cr ? null : (<><b>!</b> {w.cr} </>)}
@@ -179,7 +191,7 @@ function DataCard(props:{
           <span>{a.name} - {a.cost} AP</span><span className="descr"> - {a.descr}</span>
         </div>))}
 
-        {unit.abilities.map((a,n) => (<div key={n} className="extra">
+        {abilities.map((a,n) => (<div key={n} className="extra">
           <div className="i-ability" />
           <span>{a.name}</span><span className="descr"> - {a.descr}</span>
         </div>))}
@@ -253,8 +265,9 @@ function UnitEditor(props:{
   // setup the configuration part
   var el2:any;
   if (unit) {
-    const r_weapons = get_unique_weapons('r',unit.weapons);
-    const m_weapons = get_unique_weapons('m',unit.weapons);
+    const weapons = unit.weapons.filter(w => !w.secondary);
+    const r_weapons = get_unique_weapons('r',weapons);
+    const m_weapons = get_unique_weapons('m',weapons);
 
     el2 = (<>
       <div>Count:</div><div>

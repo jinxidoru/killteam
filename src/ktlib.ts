@@ -1,4 +1,5 @@
 import {Roster} from './types'
+import {Compendium} from './compendium'
 
 
 type Save = {id:number, name:string, faction:string}
@@ -32,13 +33,27 @@ function storage_set<T>(key:string, obj:T) {
 }
 
 
+function scrub_roster(roster:Roster|null) {
+  if (roster) {
+    const units = Compendium.factions[roster.faction].units
+
+    for (let unit of roster.units) {
+      const cunit = units.find(u => (u.name === unit.unit.name));
+      if (cunit)  unit.unit = cunit;
+    }
+  }
+
+  return roster
+}
+
+
 export function autosave(roster:Roster) {
   roster.updated = new Date()
   storage_set('autosave', roster);
 }
 
 export function load_autosave() : Roster|null {
-  return storage_get<Roster>('autosave')
+  return scrub_roster(storage_get<Roster>('autosave'))
 }
 
 export function save(roster:Roster) {
@@ -62,7 +77,7 @@ export function get_saves() : Saves {
 }
 
 export function load(id:number) : Roster|null {
-  return storage_get<Roster>(`save_${id}`);
+  return scrub_roster(storage_get<Roster>(`save_${id}`));
 }
 
 

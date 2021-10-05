@@ -9,6 +9,7 @@ export interface Weapon {
   cdam: number;
   sr: string|null;
   cr: string|null;
+  secondary: string|null;
 }
 
 export interface Unit {
@@ -31,6 +32,7 @@ export interface Unit {
   abilities: {
     name: string;
     descr: string;
+    on_weapon: boolean;
   }[]
 }
 
@@ -56,7 +58,6 @@ export interface Faction {
   clan_label: string
   units: Unit[]
 }
-
 
 export interface Dict<T> {
   [name:string]: T
