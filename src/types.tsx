@@ -41,6 +41,15 @@ export interface UnitConf {
   melee: string
 }
 
+export interface Roster {
+  name: string
+  faction: string
+  units: UnitConf[]
+
+  created: Date
+  updated: Date
+}
+
 
 export interface Dict<T> {
   [name:string]: T

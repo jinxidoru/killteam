@@ -1,22 +1,24 @@
 import {Unit,Dict,UnitConf,Weapon} from './types'
 import {Compendium} from './compendium'
 import {useState,useRef} from 'react'
+import * as ktlib from './ktlib'
 
 
 export function TeamRoster() {
   const [edit,setEdit] = useState<UnitConf|null>(null)
   const [add,setAdd] = useState(false)
 
-  const roster = useRef<UnitConf[]>([]);
+  const roster = useRef(ktlib.load_autosave());
+  const units = roster.current.units;
 
-  const units = roster.current;
+  const autosave = () => {
+    ktlib.store(roster.current, true);
+  }
 
   // setup the editor
   let editor = render_iff(!!edit || add, () => {
 
     const onSave = (nconf:UnitConf) => {
-      setEdit(null)
-      setAdd(false)
 
       const idx = units.findIndex(u => (u === edit));
       if (idx === -1) {
@@ -24,18 +26,23 @@ export function TeamRoster() {
       } else {
         units[idx] = nconf;
       }
+
+      autosave()
+      setEdit(null)
+      setAdd(false)
     }
 
     const onCancel = (doDelete:boolean) => {
-      setEdit(null)
-      setAdd(false)
-
       if (doDelete) {
         const idx = units.findIndex(u => (u === edit));
         if (idx !== -1) {
           units.splice(idx,1);
         }
       }
+
+      autosave()
+      setEdit(null)
+      setAdd(false)
     }
 
     if (edit) {
