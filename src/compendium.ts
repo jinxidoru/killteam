@@ -8,6 +8,7 @@ type I_Extra = I_Weapon | I_Ability | I_Action
 type I_Unit = [string,number,number,number,number,number,number,string,...I_Extra[]]
 
 
+let next_id = 1;
 
 function units(faction:string, kws:string, units:I_Unit[]) : Unit[] {
   var _kws = kws.split(/, /g);
@@ -34,7 +35,8 @@ function units(faction:string, kws:string, units:I_Unit[]) : Unit[] {
     var abilities = (extra.filter(x => x[0] === 2) as I_Ability[])
       .map(a => ({name: a[1], descr: a[2] || ""}));
 
-    return {name,faction,keywords,move,apl,ga,df,sv,hp,weapons,actions,abilities};
+    var id = next_id++;
+    return {id,name,faction,keywords,move,apl,ga,df,sv,hp,weapons,actions,abilities};
   });
 }
 
@@ -42,7 +44,6 @@ function units(faction:string, kws:string, units:I_Unit[]) : Unit[] {
 function tau() : Unit[] {
   var markerlight:I_Action = [3, 'Markerlight', 1, 'See page 137'];
   var camo_field:I_Ability = [2, 'Camouflage Field', 'Each time an enemy operative makes a shooting attack, unless it is within @0 of this operative or it is a subsequent attack made as a result of the Blast special rule, this operative is always treated as being in Cover for that shooting attack. While this operative has a Conceal order, it is always treated as having a Conceal order, regardless of any other rules (e.g. Vantage Point).']
-
 
   return units('hunter cadre', "t'au, <sept>", [
     [
@@ -91,14 +92,39 @@ function tau() : Unit[] {
   ]);
 }
 
+function smarine() {
 
-
-
-
-
-
-
-
-export const Compendium = {
-  all: [...tau()]
+  return units('space marine', 'imperium, adeptus astartes, <chapter>', [
+    [
+      'Intercessor (warrior)', 3, 3, 1, 3, 3, 13, 'primaris, intercessor, warrior',
+      [0, 'Auto bolt rifle', 4, 3, 3, 4, 'Ceaseless'],
+      [0, 'Bolt rifle', 4, 3, 3, 4, undefined, 'P1'],
+      [0, 'Stalker bolt rifle', 4, 3, 3, 4, 'Heavy, AP1'],
+      [1, 'Fists', 4, 3, 3, 4]
+    ],[
+      'Intercessor sergeant', 3, 3, 1, 3, 3, 14, 'primaris, leader, intercessor, sergeant',
+      [0, 'Auto bolt rifle', 4, 2, 3, 4, 'Ceaseless'],
+      [0, 'Bolt pistol', 4, 2, 3, 4, 'Rng @5'],
+      [0, 'Bolt rifle', 4, 2, 3, 4, '', 'P1'],
+      [0, 'Hand flamer', 4, 2, 2, 2, 'Rng @5, Torrent @3'],
+      [0, 'Plasma Pistol | Standard', 4, 2, 5, 6, 'Rng @5, AP1'],
+      [0, 'Plasma Pistol | Supercharge', 4, 2, 5, 6, 'Rng @5, AP2, Hot'],
+      [0, 'Stalker bolt rifle', 4, 2, 3, 4, 'Heavy, AP1'],
+      [1, 'Chainsword', 4, 3, 4, 5],
+      [1, 'Fists', 4, 3, 3, 4],
+      [1, 'Power fist', 4, 4, 5, 7, 'Brutal'],
+      [1, 'Power weapon', 4, 3, 4, 6, 'Lethal 5+'],
+      [1, 'Thunder hammer', 4, 4, 5, 6, '', 'Stun'],
+    ]
+  ]);
 }
+
+
+const all = [...tau(),...smarine()]
+const factions = [...new Set(all.map(u => u.faction))]
+
+const by_faction = (faction:string) => {
+  return all.filter(u => (u.faction === faction));
+}
+
+export const Compendium = {all, factions, by_faction}

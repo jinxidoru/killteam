@@ -5,30 +5,53 @@ import {useState,useRef} from 'react'
 
 export function TeamRoster() {
   const [edit,setEdit] = useState<UnitConf|null>(null)
-  const roster = useRef(Compendium.all.filter((u,n) => (n===0)).map(u => ({
-    count: Math.ceil(Math.random()*5), unit: u, ranged:"", melee:""
-  })));
+  const [add,setAdd] = useState(false)
+
+  const roster = useRef<UnitConf[]>([]);
 
   const units = roster.current;
 
-  const onSave = (nconf:UnitConf|null) => {
-    const idx = units.findIndex(u => (u === edit));
-    if (idx === -1) {
-      if (nconf !== null) {
-        units.push(nconf)
-      }
-    } else if (nconf === null) {
-      units.splice(idx,1)
-    } else {
-      units[idx] = nconf;
-    }
-    setEdit(null)
-  }
+  // setup the editor
+  let editor = render_iff(!!edit || add, () => {
 
+    const onSave = (nconf:UnitConf) => {
+      setEdit(null)
+      setAdd(false)
+
+      const idx = units.findIndex(u => (u === edit));
+      if (idx === -1) {
+        units.push(nconf)
+      } else {
+        units[idx] = nconf;
+      }
+    }
+
+    const onCancel = (doDelete:boolean) => {
+      setEdit(null)
+      setAdd(false)
+
+      if (doDelete) {
+        const idx = units.findIndex(u => (u === edit));
+        if (idx !== -1) {
+          units.splice(idx,1);
+        }
+      }
+    }
+
+    if (edit) {
+      return (<UnitEditor onSave={onSave} onCancel={onCancel} conf={edit} />)
+    } else {
+      let faction = units.length ? units[0].unit.faction : Compendium.factions[0]
+      return (<UnitEditor onSave={onSave} onCancel={onCancel} faction={faction} />)
+    }
+  })
+
+  // render
   return <div>
-    {edit ? (<UnitEditor conf={edit} onSave={onSave} />) : null}
+    {editor}
 
     <div className="kt-controls">
+      <button onClick={() => setAdd(true)}>Add Unit</button>
     </div>
 
     <div className="kt-roster">
@@ -75,7 +98,6 @@ function UnitInfo(props:{
           <div className="i-ability" />
           <span>{a.name}</span><span className="descr"> - {a.descr}</span>
         </div>))}
-
       </div>
     </div>
   )
@@ -96,43 +118,90 @@ function DamageTracker({units}:{units:UnitConf[]}) {
 
 
 function UnitEditor(props:{
-  conf: UnitConf,
-  onSave(_:UnitConf|null): void
+  conf?: UnitConf,
+  onSave(_:UnitConf): void,
+  onCancel(_:boolean): void,
+  faction?: string,
 }) {
   const conf = props.conf;
-  const countRef = useRef(`${conf.count}`)
-  const rangedRef = useRef(conf.ranged)
-  const meleeRef = useRef(conf.melee)
+  const is_edit = !!conf;
+  const countRef = useRef(conf ? `${conf.count}`: '0')
+  const rangedRef = useRef(conf ? conf.ranged : '')
+  const meleeRef = useRef(conf ? conf.melee : '')
 
-  const onDelete = () => {
-    props.onSave(null)
-  }
+  const [unitid,setUnitId] = useState<number>(0)
+  const [faction,setFaction] = useState(props.faction || Compendium.factions[0])
+  const [unit,setUnit] = useState(conf?.unit)
 
   const onSave = () => {
-    var nconf = Object.assign({},conf)
-    nconf.count = parseInt(countRef.current);
-    nconf.ranged = rangedRef.current;
-    nconf.melee = meleeRef.current;
-    props.onSave(nconf)
+    props.onSave({
+      count: ~~countRef.current,
+      ranged: rangedRef.current,
+      melee: meleeRef.current,
+      unit: unit as Unit
+    })
   }
 
+  // setup the add unit portion
+  var el1:any
+  if (!conf) {
+    let units = Compendium.by_faction(faction);
 
-  const r_weapons = get_unique_weapons('r',conf.unit.weapons);
-  const m_weapons = get_unique_weapons('m',conf.unit.weapons);
+    const setId = (id:number) => {
+      setUnitId(id)
+      setUnit(units.find(u => u.id === id))
+    }
+
+    const setFaction_ = (faction:string) => {
+      setFaction(faction)
+      units = Compendium.by_faction(faction)
+      setId(units[0].id)
+    }
+
+    // default the unit selection
+    if (units.length && !units.find(u => (u.id === unitid))) {
+      setId(units[0].id)
+    }
+
+    el1 = (<>
+      <div>Faction:</div><div>
+        <select value={faction} onChange={e => setFaction_(e.target.value)}>
+          {Compendium.factions.map(f => (<option key={f}>{f}</option>))}
+        </select>
+      </div>
+      {!units.length ? null : (<><div>Unit:</div><div>
+        <select value={unitid} onChange={e => setId(~~e.target.value)}>
+          {units.map(u => (<option key={u.id} value={u.id}>{u.name}</option>))}
+        </select>
+      </div></>)}
+    </>)
+  }
+
+  // setup the configuration part
+  var el2:any;
+  if (unit) {
+    const r_weapons = get_unique_weapons('r',unit.weapons);
+    const m_weapons = get_unique_weapons('m',unit.weapons);
+
+    el2 = (<>
+      <div>Count:</div><div>
+        <Select value={countRef} values={range_array(10).map(n => `${n+1}`)} />
+      </div>
+      <div>Ranged:</div><div>
+        <Select value={rangedRef} values={r_weapons} />
+      </div>
+      <div>Melee:</div><div>
+        <Select value={meleeRef} values={m_weapons} />
+      </div>
+    </>)
+  }
 
   return (<Modal><div className="kt-unit-editor">
-    <div>Count:</div><div>
-      <Select value={countRef} values={range_array(10).map(n => `${n+1}`)} />
-    </div>
-    <div>Ranged:</div><div>
-      <Select value={rangedRef} values={r_weapons} />
-    </div>
-    <div>Melee:</div><div>
-      <Select value={meleeRef} values={m_weapons} />
-    </div>
+    {el1}{el2}
     <div style={{marginTop:10,gridColumn:'1/3'}}>
-      <button onClick={() => onDelete()}>Delete</button>&nbsp;
-      <button onClick={() => onSave()}>Save</button>
+      <button onClick={() => props.onCancel(false)}>Cancel</button>
+      {render_if(is_edit, (<button onClick={() => props.onCancel(true)}>Delete</button>))}
+      <button onClick={() => onSave()}>{is_edit ? 'Save' : 'Add'}</button>
     </div>
   </div></Modal>);
 }
@@ -143,7 +212,12 @@ function Modal({children}:{children:any}) {
 }
 
 
-function Select({values,value}:{values:string[], value:React.MutableRefObject<string>}) {
+function Select({values,value}:{
+  values: string[],
+  value: React.MutableRefObject<string>,
+
+
+}) {
   const [state,setState] = useState(value.current)
 
   if (!values.find(x => (x===state))) {
@@ -182,4 +256,14 @@ function range_array(n:number) {
 function get_unique_weapons(type:'r'|'m', weapons:Weapon[]) {
   let names = weapons.filter(w => w.type === type).map(w => w.uname)
   return [...new Set(names)]
+}
+
+type RenderFn = () => JSX.Element;
+
+function render_if(cond:boolean, el:JSX.Element) : JSX.Element|null {
+  return cond ? el : null;
+}
+
+function render_iff(cond:boolean, fn:RenderFn) : JSX.Element|null {
+  return cond ? fn() : null;
 }

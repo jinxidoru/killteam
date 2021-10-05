@@ -171,5 +171,9 @@ $ktGrey: #aaa;
 
 .kt-unit-editor {
   display: grid;
-  grid-template-columns: auto auto;
+  grid-template-columns: 100px auto;
+
+  button {
+    margin-right: 10px;
+  }
 }

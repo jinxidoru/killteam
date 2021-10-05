@@ -12,6 +12,7 @@ export interface Weapon {
 }
 
 export interface Unit {
+  id: number;
   name: string;
   faction: string;
   keywords: string[];
