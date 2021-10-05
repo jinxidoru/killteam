@@ -127,4 +127,18 @@ const by_faction = (faction:string) => {
   return all.filter(u => (u.faction === faction));
 }
 
-export const Compendium = {all, factions, by_faction}
+const get_clan_descr = (faction:string) => {
+  for (let unit of all) {
+    if (unit.faction === faction) {
+      for (let kw of unit.keywords) {
+        let x = kw.match(/^<(.*)>$/)
+        if (x) {
+          return x[1];
+        }
+      }
+    }
+  }
+  return '';
+}
+
+export const Compendium = {all, factions, by_faction, get_clan_descr}

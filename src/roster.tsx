@@ -1,24 +1,71 @@
-import {Unit,Dict,UnitConf,Weapon} from './types'
+import {Unit,Dict,UnitConf,Weapon,Roster} from './types'
 import {Compendium} from './compendium'
 import {useState,useRef} from 'react'
 import * as ktlib from './ktlib'
 
 
-export function TeamRoster() {
+export function Root() {
+  const [roster,setRoster] = useState(ktlib.load_autosave());
+
+  if (!roster) {
+    return (<CreateRoster onCreate={setRoster} />)
+  } else {
+    return (<TeamRoster roster={roster} onNew={() => setRoster(null)} />)
+  }
+}
+
+
+export function CreateRoster(props:{
+  onCreate(roster:Roster): void
+}) {
+  const [name,setName] = useState('')
+  const [faction,setFaction] = useState(() => Compendium.factions.sort(() => Math.random()-.5)[0])
+  const [clan,setClan] = useState('')
+
+  const clan_descr = Compendium.get_clan_descr(faction)
+
+  const create = () => {
+    props.onCreate({
+      name: name.trim(),
+      faction: faction.trim(),
+      clan: clan.trim(),
+      units: [],
+      created: new Date(),
+      updated: new Date(),
+    })
+  }
+
+  return <Modal><div className="kt-create">
+    <div>Name:</div><div><input value={name} onChange={e => setName(e.target.value)} /></div>
+    <div style={{textTransform:'capitalize'}}>{clan_descr}:</div>
+    <div><input value={clan} onChange={e => setClan(e.target.value)} /></div>
+    <div>Faction:</div><div><select value={faction} onChange={e => setFaction(e.target.value)}>
+      {Compendium.factions.map(f => (<option key={f}>{f}</option>))}
+    </select></div>
+    <div className="buttons">
+      <button onClick={create} disabled={!name.trim() || !clan.trim()}>Create</button>
+    </div>
+  </div></Modal>
+}
+
+
+export function TeamRoster(props:{
+  roster:Roster,
+  onNew() : void,
+}) {
   const [edit,setEdit] = useState<UnitConf|null>(null)
   const [add,setAdd] = useState(false)
 
-  const roster = useRef(ktlib.load_autosave());
-  const units = roster.current.units;
-
-  const autosave = () => {
-    ktlib.store(roster.current, true);
-  }
+  const roster = props.roster;
+  const units = roster.units;
+  ktlib.store(roster, true);
 
   // setup the editor
   let editor = render_iff(!!edit || add, () => {
 
     const onSave = (nconf:UnitConf) => {
+      setEdit(null)
+      setAdd(false)
 
       const idx = units.findIndex(u => (u === edit));
       if (idx === -1) {
@@ -26,30 +73,24 @@ export function TeamRoster() {
       } else {
         units[idx] = nconf;
       }
-
-      autosave()
-      setEdit(null)
-      setAdd(false)
     }
 
     const onCancel = (doDelete:boolean) => {
+      setEdit(null)
+      setAdd(false)
+
       if (doDelete) {
         const idx = units.findIndex(u => (u === edit));
         if (idx !== -1) {
           units.splice(idx,1);
         }
       }
-
-      autosave()
-      setEdit(null)
-      setAdd(false)
     }
 
     if (edit) {
-      return (<UnitEditor onSave={onSave} onCancel={onCancel} conf={edit} />)
+      return (<UnitEditor onSave={onSave} onCancel={onCancel} faction={roster.faction} conf={edit} />)
     } else {
-      let faction = units.length ? units[0].unit.faction : Compendium.factions[0]
-      return (<UnitEditor onSave={onSave} onCancel={onCancel} faction={faction} />)
+      return (<UnitEditor onSave={onSave} onCancel={onCancel} faction={roster.faction} />)
     }
   })
 
@@ -59,11 +100,18 @@ export function TeamRoster() {
 
     <div className="kt-controls">
       <button onClick={() => setAdd(true)}>Add Unit</button>
+      <button onClick={props.onNew}>New Roster</button>
     </div>
 
     <div className="kt-roster">
-      <div>{units.map((u,n) => (<UnitInfo key={n} conf={u} onEdit={() => setEdit(u)} />))}</div>
-      <DamageTracker units={units} />
+      <div className="header">
+        <b>Name</b> {roster.name}<br/>
+        <b>Faction</b> {roster.faction}
+      </div>
+      <div className="body">
+        <div>{units.map((u,n) => (<UnitInfo key={n} conf={u} onEdit={() => setEdit(u)} />))}</div>
+        <DamageTracker units={units} />
+      </div>
     </div>
   </div>
 }
@@ -81,7 +129,7 @@ function UnitInfo(props:{
   return (
     <div className="kt-unit-info">
       <button className="edit" onClick={props.onEdit}>EDIT</button>
-      <div className="name">{conf.count ? `[${conf.count}] ` : ''}{unit.name}</div>
+      <div className="name">{conf.count ? `( ${conf.count} ) ` : ''}&nbsp;{unit.name}</div>
       <div className="keywords"><b>{unit.faction}</b>{keywords}</div>
       <div className="info">
         <div className="stats topline"><b>M</b> {unit.move} <b>APL</b> {unit.apl} <b>GA</b> {unit.ga} <b>DF</b> {unit.df} <b>SV</b> {unit.sv}+ <b>W</b> {unit.hp}</div>
@@ -114,9 +162,9 @@ function DamageTracker({units}:{units:UnitConf[]}) {
   var n = 0;
   var each = units.map(({unit,count}) => (<div key={n++} className="unit">
     <div className="name">{unit.name}</div>
-    {range_array(count).map(() => (<div key={n++}>
-        {range_array(Math.ceil(unit.hp/2)).map(() => 'O').join('')}&nbsp;&nbsp;
-        {range_array(Math.floor(unit.hp/2)).map(() => 'O').join('')}
+    {range_array(count).map(i => (<div className="pips" key={n++}>
+      {range_array(Math.ceil(unit.hp/2)).map(() => 'O').join('')}&nbsp;&nbsp;
+      {range_array(Math.floor(unit.hp/2)).map(() => 'O').join('')}
     </div>))}
   </div>));
 
@@ -128,7 +176,7 @@ function UnitEditor(props:{
   conf?: UnitConf,
   onSave(_:UnitConf): void,
   onCancel(_:boolean): void,
-  faction?: string,
+  faction: string,
 }) {
   const conf = props.conf;
   const is_edit = !!conf;
@@ -159,23 +207,12 @@ function UnitEditor(props:{
       setUnit(units.find(u => u.id === id))
     }
 
-    const setFaction_ = (faction:string) => {
-      setFaction(faction)
-      units = Compendium.by_faction(faction)
-      setId(units[0].id)
-    }
-
     // default the unit selection
     if (units.length && !units.find(u => (u.id === unitid))) {
       setId(units[0].id)
     }
 
     el1 = (<>
-      <div>Faction:</div><div>
-        <select value={faction} onChange={e => setFaction_(e.target.value)}>
-          {Compendium.factions.map(f => (<option key={f}>{f}</option>))}
-        </select>
-      </div>
       {!units.length ? null : (<><div>Unit:</div><div>
         <select value={unitid} onChange={e => setId(~~e.target.value)}>
           {units.map(u => (<option key={u.id} value={u.id}>{u.name}</option>))}
@@ -205,7 +242,7 @@ function UnitEditor(props:{
 
   return (<Modal><div className="kt-unit-editor">
     {el1}{el2}
-    <div style={{marginTop:10,gridColumn:'1/3'}}>
+    <div className="buttons">
       <button onClick={() => props.onCancel(false)}>Cancel</button>
       {render_if(is_edit, (<button onClick={() => props.onCancel(true)}>Delete</button>))}
       <button onClick={() => onSave()}>{is_edit ? 'Save' : 'Add'}</button>

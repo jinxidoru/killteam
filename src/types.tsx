@@ -44,6 +44,7 @@ export interface UnitConf {
 export interface Roster {
   name: string
   faction: string
+  clan: string
   units: UnitConf[]
 
   created: Date

@@ -36,18 +36,12 @@ export function store(roster:Roster, is_auto:boolean) {
   });
 }
 
-export function load_autosave() : Roster {
+export function load_autosave() : Roster|null {
   return with_storage(false, storage => {
     if (storage.autosave) {
       return storage.autosave;
     } else {
-      return {
-        name: "New Kill Team",
-        faction: Compendium.factions.sort(() => Math.random()-.5)[0],
-        units: [],
-        created: new Date(),
-        updated: new Date()
-      }
+      return null;
     }
   });
 }
