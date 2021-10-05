@@ -189,13 +189,12 @@ function DataCard(props:{
             <b>A</b> {w.atk} <b>{w.type === 'r' ? 'BS' : 'WS'}</b> {w.ws}+ <b>D</b> {w.dam}/{w.cdam}
             <br/>
             {!w.sr ? null : (<><b>SR</b> </>)}
-            {[...(w.sr||"").matchAll(/([^@]+|@.)/g)].map(([x]) => {
+            {[...(w.sr||"").matchAll(/([^@]+|@.)/g)].map(([x],i) => {
               if (x[0] === '@') {
                 let clazz= `ktg-m${x[1]}`
-                console.log(clazz)
-                return (<span className={clazz} />)
+                return (<span key={i} className={clazz} />)
               } else {
-                return (<span>{x}</span>)
+                return (<span key={i}>{x}</span>)
               }
             })}
             {!w.cr ? null : (<><b>!</b> {w.cr} </>)}
@@ -282,8 +281,12 @@ function UnitEditor(props:{
   var el2:any;
   if (unit) {
     const weapons = unit.weapons.filter(w => !w.secondary);
-    const r_weapons = get_unique_weapons('r',weapons);
+    let r_weapons = get_unique_weapons('r',weapons);
     const m_weapons = get_unique_weapons('m',weapons);
+
+    if (r_weapons.length === 0) {
+      r_weapons = ["-"];
+    }
 
     el2 = (<>
       <div>Count:</div><div>

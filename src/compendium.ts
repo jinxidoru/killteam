@@ -185,12 +185,70 @@ function orks() {
   ]);
 }
 
+function death_guard() {
+  let resilient:I_Ability = [2, 'Disgustingly Resilient', 'Each time this operative would lose a wound, roll one 06: on a 5+, that wound is not lost. Other than the effects of Battle Scars, this operative cannot be injured.']
+
+  return faction('Death Guard', 'death guard', 'company', 'chaos, bubonic astartes', [
+    [
+      'Plague marine (warrior)', 2, 3, 1, 3, 3, 12, 'plague marine, warrior',
+      [0, 'Boltgun', 4, 3, 3, 4],
+      [1, 'Plague knife', 3, 3, 3, 5],
+      resilient
+    ],[
+      'Plague marine (gunner)', 2, 3, 1, 3, 3, 12, 'plague marine, gunner',
+      [0, 'Meltagun', 4, 3, 6, 3, 'Rng @6, AP2', 'MW4'],
+      [0, 'Plague belcher', 5, 2, 2, 3, 'Rng @6, Torrent @1'],
+      [0, 'Plasma gun | Standard', 4, 3, 5, 6, 'AP1'],
+      [0, 'Plasma gun | Supercharge', 4, 3, 5, 6, 'AP2, Hot'],
+      [1, 'Plague knife', 3, 3, 3, 5],
+      resilient
+    ],[
+      'Plague marine (heavy gunner)', 2, 3, 1, 3, 3, 12, 'plague marine, heavy gunner',
+      [0, 'Blight launcher', 4, 3, 4, 6, 'AP1'],
+      [0, 'Plague spewer', 6, 2, 2, 3, 'Rng @6, Torrent @1'],
+      [1, 'Plague knife', 3, 3, 3, 5],
+      resilient
+    ],[
+      'Plague marine (fighter)', 2, 3, 1, 3, 3, 12, 'plague marine, fighter',
+      [0, 'Bolt pistol', 4, 3, 3, 4, 'Rng @6'],
+      [1, 'Bubotic axe', 5, 3, 4, 6, _, 'Rending'],
+      [1, 'Flail of corruption', 5, 3, 4, 5, _, 'Reap 2'],
+      [1, 'Great plague cleaver', 5, 4, 5, 7, _, 'Rending'],
+      [1, 'Mace of contagion', 5, 3, 4, 5, _, 'Stun'],
+      [1, 'Plague knives', 5, 3, 3, 5, 'Relentless'],
+      resilient
+    ],[
+      'Plague marine (icon bearer)', 2, 3, 1, 3, 3, 12, 'plague marine, icon bearer',
+      [0, 'Boltgun', 4, 3, 3, 4],
+      [1, 'Plague knife', 3, 3, 3, 5],
+      resilient,
+      [2, 'Icon Bearer', "When determining control of an objective marker, treat this operative's APL as being 1 higher. Note that this is not a modifier. In narrative play, this is cumulative with the Focused Battle Honour (see the Kill Team Core Book)."],
+      [3, 'Icon of Decay', 1, "Until the end of the Turning Point, while this operative is Visible to and within @3 of a friendly BUBONIC ASTARTES operative, that friendly operative is invigorated by decay. While an operative is invigorated by decay, when rolling for its Disgustingly Resilient ability, you can re-roll results of 1 and 2."]
+    ],[
+      'Plague marine champion', 3, 3, 1, 3, 3, 13, 'leader, plague marine, champion',
+      [0, 'Boltgun', 4, 2, 3, 4],
+      [0, 'Bolt pistol', 4, 2, 3, 4, 'Rng @6'],
+      [0, 'Plasma pistol | Standard', 4, 2, 5, 6, 'Rng @6, AP1'],
+      [0, 'Plasma pistol | Supercharge', 4, 2, 5, 6, 'Rng @6, AP2, Hot'],
+      [1, 'Plague knife', 5, 2, 3, 5],
+      [1, 'Plague sword', 5, 2, 4, 6],
+      [1, 'Power fist', 5, 3, 5, 7, 'Brutal']
+    ],[
+      'Poxwalker', 2, 2, 2, 3, 6, 7, 'poxwalker',
+      [1, 'Improvised weapon', 4, 4, 2, 3],
+      resilient,
+      [2, 'Mindless', "Each time this operative would perform a mission action or the Pick Up action, you must subtract one additional AP to do so. This operative cannot be equipped with equipment. In narrative play, it cannot gain (or lose) experience and automatically passes Casualty tests."]
+    ]
+  ]);
+}
+
 
 
 const factions:Dict<Faction> = {
   tau: tau(),
   space_marine: space_marine(),
   ork: orks(),
+  death_guard: death_guard(),
 }
 
 function random_faction() {
