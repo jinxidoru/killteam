@@ -4,14 +4,22 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 
-ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
-  document.getElementById('root')
-);
+// reset the local storage state
+if (window.location.search.indexOf('reset') !== -1) {
+  localStorage.clear()
+  window.location.replace('/')
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
+// normal
+} else {
+  ReactDOM.render(
+    <React.StrictMode>
+      <App />
+    </React.StrictMode>,
+    document.getElementById('root')
+  );
+
+  // If you want to start measuring performance in your app, pass a function
+  // to log results (for example: reportWebVitals(console.log))
+  // or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
+  reportWebVitals();
+}

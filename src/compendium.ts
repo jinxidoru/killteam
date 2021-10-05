@@ -10,7 +10,9 @@ type I_Unit = [string,number,number,number,number,number,number,string,...I_Extr
 
 let next_id = 1;
 
-function faction(faction:string, clan_label:string, kws:string, units_:I_Unit[]) : Faction {
+function faction(fname:string, faction:string, clan_label:string, kws:string, units_:I_Unit[])
+  : Faction
+{
   var _kws = kws.split(/, /g);
 
   let units = units_.map(o => {
@@ -40,7 +42,7 @@ function faction(faction:string, clan_label:string, kws:string, units_:I_Unit[])
   });
 
   return {
-    name: faction,
+    name: fname,
     clan_label, units,
   }
 }
@@ -50,7 +52,7 @@ function tau() {
   var markerlight:I_Action = [3, 'Markerlight', 1, 'See page 137'];
   var camo_field:I_Ability = [2, 'Camouflage Field', 'Each time an enemy operative makes a shooting attack, unless it is within @0 of this operative or it is a subsequent attack made as a result of the Blast special rule, this operative is always treated as being in Cover for that shooting attack. While this operative has a Conceal order, it is always treated as having a Conceal order, regardless of any other rules (e.g. Vantage Point).']
 
-  return faction('hunter cadre', 'sept', "t'au, <>", [
+  return faction("T'au Empire", 'hunter cadre', 'sept', "t'au, <>", [
     [
       "Fire warrior shas'la", 3, 2, 1, 3, 4, 7, "fire warrior, shas'la",
       [0, "Pulse blaster | Close range", 4, 4, 4, 5, 'Rng @5, AP1'],
@@ -99,7 +101,7 @@ function tau() {
 
 function space_marine() {
 
-  return faction('space marine', 'chapter', 'imperium, adeptus astartes, <>', [
+  return faction('Space Marines', 'space marine', 'chapter', 'imperium, adeptus astartes, <>', [
     [
       'Intercessor (warrior)', 3, 3, 1, 3, 3, 13, 'primaris, intercessor, warrior',
       [0, 'Auto bolt rifle', 4, 3, 3, 4, 'Ceaseless'],

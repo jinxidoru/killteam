@@ -4,19 +4,40 @@ import {useState,useRef} from 'react'
 import * as ktlib from './ktlib'
 
 
-export function Root() {
-  const [roster,setRoster] = useState(ktlib.load_autosave());
 
-  if (!roster) {
-    return (<CreateRoster onCreate={setRoster} />)
-  } else {
-    return (<TeamRoster roster={roster} onNew={() => setRoster(null)} />)
+function useState2<T>(init:T, onChange: (_:T) => void) : [T,(_:T) => void] {
+  const [val,setVal] = useState(init);
+  const setVal2 = (nval:T) => {
+    setVal(nval);
+    onChange(nval);
   }
+
+  return [val,setVal2]
+}
+
+
+export function Root() {
+  const [mode,setMode] = useState(0)
+  const [roster,setRoster] = useState2(ktlib.load_autosave(), () => setMode(0));
+
+  const onCancel = () => setMode(0);
+
+  let roster_view = <></>
+  if (roster) {
+    roster_view = (<RosterView roster={roster} onNew={() => setMode(1)} onLoad={() => setMode(2)}/>)
+  }
+  let create_view = render_if(!roster || mode === 1,
+    (<CreateRoster onCreate={setRoster} onCancel={onCancel} />))
+  let loader_view = render_if(mode === 2,
+    (<LoadRoster onLoad={setRoster} onCancel={onCancel} />))
+
+  return <>{roster_view}{create_view}{loader_view}</>
 }
 
 
 export function CreateRoster(props:{
-  onCreate(roster:Roster): void
+  onCreate(roster:Roster): void,
+  onCancel?: () => void
 }) {
   const [name,setName] = useState('')
   const [faction,setFaction] = useState(() => Compendium.random_faction())
@@ -45,22 +66,24 @@ export function CreateRoster(props:{
       ))}
     </select></div>
     <div className="buttons">
+      {render_if(!!props.onCancel, (<button onClick={props.onCancel}>Cancel</button>))}
       <button onClick={create} disabled={!name.trim() || !clan.trim()}>Create</button>
     </div>
   </div></Modal>
 }
 
 
-export function TeamRoster(props:{
+export function RosterView(props:{
   roster:Roster,
   onNew() : void,
+  onLoad() : void,
 }) {
   const [edit,setEdit] = useState<UnitConf|null>(null)
   const [add,setAdd] = useState(false)
 
   const roster = props.roster;
   const units = roster.units;
-  ktlib.store(roster, true);
+  ktlib.autosave(roster);
   const faction = Compendium.factions[roster.faction]
 
   // setup the editor
@@ -102,8 +125,10 @@ export function TeamRoster(props:{
     {editor}
 
     <div className="kt-controls">
-      <button onClick={() => setAdd(true)}>Add Unit</button>
-      <button onClick={props.onNew}>New Roster</button>
+      <button onClick={props.onNew}>New</button>
+      <button onClick={() => ktlib.save(roster)}>Save</button>
+      <button onClick={props.onLoad}>Load</button>
+      <button onClick={() => setAdd(true)}>Add Operative</button>
     </div>
 
     <div className="kt-roster">
@@ -252,6 +277,26 @@ function UnitEditor(props:{
       <button onClick={() => onSave()}>{is_edit ? 'Save' : 'Add'}</button>
     </div>
   </div></Modal>);
+}
+
+
+function LoadRoster(props:{
+  onLoad(roster:Roster) : void,
+  onCancel() : void
+}) {
+  let saves = ktlib.get_saves()
+
+  const onLoad = (id:number) => {
+    let roster = ktlib.load(id)
+    if (roster)  props.onLoad(roster)
+  }
+
+  return <Modal><div className="kt-loader">
+    {saves.map(s => (<button onClick={() => onLoad(s.id)}>
+        {s.name} | {Compendium.factions[s.faction].name}
+    </button>))}
+    <button onClick={props.onCancel}>Cancel</button>
+  </div></Modal>
 }
 
 

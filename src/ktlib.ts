@@ -1,46 +1,68 @@
-import {Roster,Dict} from './types'
+import {Roster} from './types'
 
 
-interface Storage {
-  autosave?: Roster
-  rosters: Dict<Roster>
-}
+type Save = {id:number, name:string, faction:string}
+type Saves = Save[]
 
 
-function with_storage<T>(update:boolean, fn:(_:Storage) => T) {
-  let storage:Storage = { rosters:{} };
+function storage_get<T>(key:string) : T|null {
+  key = `kt_${key}`
   try {
-    storage = JSON.parse(localStorage.getItem('kt') as string) as Storage;
-  } catch (e) {
-    localStorage.setItem('kt', JSON.stringify(storage));
-  }
+    let json = localStorage.getItem(key)
+    if (json) {
+      return JSON.parse(json) as T
+    }
+  } catch (e) {}
+  return null;
+}
 
-  let rv = fn(storage);
-  if (update) {
-    localStorage.setItem('kt', JSON.stringify(storage));
+function storage_get_dflt<T>(key:string, dflt:T) : T {
+  let val = storage_get<T>(key);
+  if (val) {
+    return val;
+  } else {
+    storage_set(key,dflt)
+    return dflt;
   }
-  return rv;
+}
+
+function storage_set<T>(key:string, obj:T) {
+  key = `kt_${key}`
+  localStorage.setItem(key, JSON.stringify(obj));
 }
 
 
-export function store(roster:Roster, is_auto:boolean) {
+export function autosave(roster:Roster) {
   roster.updated = new Date()
-
-  with_storage(true, storage => {
-    if (is_auto) {
-      storage.autosave = roster;
-    } else {
-      storage.rosters[roster.name] = roster;
-    }
-  });
+  storage_set('autosave', roster);
 }
 
 export function load_autosave() : Roster|null {
-  return with_storage(false, storage => {
-    if (storage.autosave) {
-      return storage.autosave;
-    } else {
-      return null;
-    }
-  });
+  return storage_get<Roster>('autosave')
 }
+
+export function save(roster:Roster) {
+  var saves = storage_get_dflt('saves', [] as Saves)
+  var save = saves.find(s => (s.name === roster.name && s.faction === roster.faction));
+
+  // create a new save
+  if (!save) {
+    var id = Math.max(0, ...saves.map(s => s.id)) + 1;
+    save = {id:id, name:roster.name, faction:roster.faction};
+    saves.push(save);
+    storage_set('saves',saves);
+  }
+
+  // write the save
+  storage_set(`save_${save?.id}`, roster);
+}
+
+export function get_saves() : Saves {
+  return storage_get_dflt('saves', [] as Saves)
+}
+
+export function load(id:number) : Roster|null {
+  return storage_get<Roster>(`save_${id}`);
+}
+
+
