@@ -1,4 +1,4 @@
-import {Unit,Dict,UnitConf,Weapon,Roster} from './types'
+import {Unit,UnitConf,Weapon,Roster} from './types'
 import {Compendium} from './compendium'
 import {useState,useRef} from 'react'
 import * as ktlib from './ktlib'
@@ -19,10 +19,10 @@ export function CreateRoster(props:{
   onCreate(roster:Roster): void
 }) {
   const [name,setName] = useState('')
-  const [faction,setFaction] = useState(() => Compendium.factions.sort(() => Math.random()-.5)[0])
+  const [faction,setFaction] = useState(() => Compendium.random_faction())
   const [clan,setClan] = useState('')
 
-  const clan_descr = Compendium.get_clan_descr(faction)
+  const {clan_label} = Compendium.factions[faction]
 
   const create = () => {
     props.onCreate({
@@ -37,10 +37,12 @@ export function CreateRoster(props:{
 
   return <Modal><div className="kt-create">
     <div>Name:</div><div><input value={name} onChange={e => setName(e.target.value)} /></div>
-    <div style={{textTransform:'capitalize'}}>{clan_descr}:</div>
+    <div style={{textTransform:'capitalize'}}>{clan_label}:</div>
     <div><input value={clan} onChange={e => setClan(e.target.value)} /></div>
     <div>Faction:</div><div><select value={faction} onChange={e => setFaction(e.target.value)}>
-      {Compendium.factions.map(f => (<option key={f}>{f}</option>))}
+      {Object.entries(Compendium.factions).map(([id,f]) => (
+            <option key={id} value={id}>{f.name}</option>
+      ))}
     </select></div>
     <div className="buttons">
       <button onClick={create} disabled={!name.trim() || !clan.trim()}>Create</button>
@@ -59,6 +61,7 @@ export function TeamRoster(props:{
   const roster = props.roster;
   const units = roster.units;
   ktlib.store(roster, true);
+  const faction = Compendium.factions[roster.faction]
 
   // setup the editor
   let editor = render_iff(!!edit || add, () => {
@@ -106,10 +109,11 @@ export function TeamRoster(props:{
     <div className="kt-roster">
       <div className="header">
         <b>Name</b> {roster.name}<br/>
-        <b>Faction</b> {roster.faction}
+        <b>Faction</b> {faction.name}<br/>
+        <b>{faction.clan_label}</b> {roster.clan}
       </div>
       <div className="body">
-        <div>{units.map((u,n) => (<UnitInfo key={n} conf={u} onEdit={() => setEdit(u)} />))}</div>
+        <div>{units.map((u,n) => (<DataCard clan={roster.clan} key={n} conf={u} onEdit={() => setEdit(u)} />))}</div>
         <DamageTracker units={units} />
       </div>
     </div>
@@ -117,13 +121,14 @@ export function TeamRoster(props:{
 }
 
 
-function UnitInfo(props:{
+function DataCard(props:{
   conf:UnitConf,
+  clan:string,
   onEdit(): void,
 }) {
   const conf = props.conf;
   const unit = conf.unit;
-  var keywords = resolve_keywords(unit);
+  var keywords = unit.keywords.map(kw => (kw === '<>') ? `, ${props.clan}` : `, ${kw}`)
   var weapons = unit.weapons.filter(w => (w.uname === conf.ranged || w.uname === conf.melee));
 
   return (
@@ -185,7 +190,6 @@ function UnitEditor(props:{
   const meleeRef = useRef(conf ? conf.melee : '')
 
   const [unitid,setUnitId] = useState<number>(0)
-  const [faction,setFaction] = useState(props.faction || Compendium.factions[0])
   const [unit,setUnit] = useState(conf?.unit)
 
   const onSave = () => {
@@ -200,7 +204,7 @@ function UnitEditor(props:{
   // setup the add unit portion
   var el1:any
   if (!conf) {
-    let units = Compendium.by_faction(faction);
+    let {units} = Compendium.factions[props.faction];
 
     const setId = (id:number) => {
       setUnitId(id)
@@ -281,18 +285,6 @@ function Select({values,value}:{
 
 
 // ---- helper functions
-function resolve_keywords(unit:Unit) {
-  var kw_replacement:Dict<string> = {};
-
-  return unit.keywords.map(kw => {
-    if (kw.startsWith("<")) {
-      var kwx = kw_replacement[kw.substr(1,kw.length-2)] || '';
-      if (kwx)  kw = kwx;
-    }
-    return `, ${kw}`
-  }).join('');
-}
-
 function range_array(n:number) {
   return Array.from(Array(n).keys());
 }

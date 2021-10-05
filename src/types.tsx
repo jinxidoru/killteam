@@ -51,6 +51,12 @@ export interface Roster {
   updated: Date
 }
 
+export interface Faction {
+  name: string
+  clan_label: string
+  units: Unit[]
+}
+
 
 export interface Dict<T> {
   [name:string]: T

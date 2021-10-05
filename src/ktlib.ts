@@ -1,5 +1,4 @@
 import {Roster,Dict} from './types'
-import {Compendium} from './compendium'
 
 
 interface Storage {

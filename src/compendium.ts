@@ -1,4 +1,4 @@
-import { Weapon, Unit } from './types'
+import { Weapon, Faction, Dict } from './types'
 
 
 type I_Weapon = [0|1,string,number,number,number,number,string?,string?]
@@ -10,10 +10,10 @@ type I_Unit = [string,number,number,number,number,number,number,string,...I_Extr
 
 let next_id = 1;
 
-function units(faction:string, kws:string, units:I_Unit[]) : Unit[] {
+function faction(faction:string, clan_label:string, kws:string, units_:I_Unit[]) : Faction {
   var _kws = kws.split(/, /g);
 
-  return units.map(o => {
+  let units = units_.map(o => {
     const [name,move,apl,ga,df,sv,hp,kws,...extra] = o;
 
     var keywords = _kws.concat(kws.split(/, /g));
@@ -38,14 +38,19 @@ function units(faction:string, kws:string, units:I_Unit[]) : Unit[] {
     var id = next_id++;
     return {id,name,faction,keywords,move,apl,ga,df,sv,hp,weapons,actions,abilities};
   });
+
+  return {
+    name: faction,
+    clan_label, units,
+  }
 }
 
 
-function tau() : Unit[] {
+function tau() {
   var markerlight:I_Action = [3, 'Markerlight', 1, 'See page 137'];
   var camo_field:I_Ability = [2, 'Camouflage Field', 'Each time an enemy operative makes a shooting attack, unless it is within @0 of this operative or it is a subsequent attack made as a result of the Blast special rule, this operative is always treated as being in Cover for that shooting attack. While this operative has a Conceal order, it is always treated as having a Conceal order, regardless of any other rules (e.g. Vantage Point).']
 
-  return units('hunter cadre', "t'au, <sept>", [
+  return faction('hunter cadre', 'sept', "t'au, <>", [
     [
       "Fire warrior shas'la", 3, 2, 1, 3, 4, 7, "fire warrior, shas'la",
       [0, "Pulse blaster | Close range", 4, 4, 4, 5, 'Rng @5, AP1'],
@@ -92,9 +97,9 @@ function tau() : Unit[] {
   ]);
 }
 
-function smarine() {
+function space_marine() {
 
-  return units('space marine', 'imperium, adeptus astartes, <chapter>', [
+  return faction('space marine', 'chapter', 'imperium, adeptus astartes, <>', [
     [
       'Intercessor (warrior)', 3, 3, 1, 3, 3, 13, 'primaris, intercessor, warrior',
       [0, 'Auto bolt rifle', 4, 3, 3, 4, 'Ceaseless'],
@@ -109,7 +114,7 @@ function smarine() {
       [0, 'Hand flamer', 4, 2, 2, 2, 'Rng @5, Torrent @3'],
       [0, 'Plasma Pistol | Standard', 4, 2, 5, 6, 'Rng @5, AP1'],
       [0, 'Plasma Pistol | Supercharge', 4, 2, 5, 6, 'Rng @5, AP2, Hot'],
-      [0, 'Stalker bolt rifle', 4, 2, 3, 4, 'Heavy, AP1'],
+      [0, 'Stalker bolt rifle', 4, 2, 3, 4, 'Heavy, A:1'],
       [1, 'Chainsword', 4, 3, 4, 5],
       [1, 'Fists', 4, 3, 3, 4],
       [1, 'Power fist', 4, 4, 5, 7, 'Brutal'],
@@ -120,25 +125,14 @@ function smarine() {
 }
 
 
-const all = [...tau(),...smarine()]
-const factions = [...new Set(all.map(u => u.faction))]
 
-const by_faction = (faction:string) => {
-  return all.filter(u => (u.faction === faction));
+const factions:Dict<Faction> = {
+  tau: tau(),
+  space_marine: space_marine(),
 }
 
-const get_clan_descr = (faction:string) => {
-  for (let unit of all) {
-    if (unit.faction === faction) {
-      for (let kw of unit.keywords) {
-        let x = kw.match(/^<(.*)>$/)
-        if (x) {
-          return x[1];
-        }
-      }
-    }
-  }
-  return '';
+function random_faction() {
+  return Object.keys(factions).sort(() => Math.random()-.5)[0];
 }
 
-export const Compendium = {all, factions, by_faction, get_clan_descr}
+export const Compendium = {factions, random_faction}
