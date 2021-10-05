@@ -2,7 +2,7 @@ $ktOrange: #e6531d;
 $ktGrey: #aaa;
 
 
-.controls {
+.kt-controls {
   padding: 10px;
   margin-bottom: 10px;
   border-bottom: 2px solid $ktOrange;
@@ -21,12 +21,26 @@ $ktGrey: #aaa;
 
 
 
-.kt-unit-info2 {
+.kt-unit-info {
   -webkit-print-color-adjust: exact;
   width: 4in;
   margin-bottom: 30px;
   margin-left: 5px;
   break-inside: avoid;
+  position: relative;
+
+  &:hover .edit {
+    display: block;
+  }
+
+  .edit {
+    position: absolute;
+    display: none;
+    top: 5px;
+    right: 5px;
+    cursor: pointer;
+
+  }
 
   & > div {
     padding-left: 5px;
@@ -107,4 +121,55 @@ $ktGrey: #aaa;
       color: #666;
     }
   }
+}
+
+
+.kt-roster {
+  display: grid;
+  grid-template-columns: 4.5in 2.5in;
+}
+
+
+// --- damage tracker
+.kt-dam-track {
+  width: 100%;
+  margin-left: 20px;
+
+  .unit {
+    padding-bottom: 13px;
+  }
+
+  .name {
+    border-bottom: 2px solid $ktOrange;
+    text-transform: uppercase;
+    font-family: impact;
+    color: $ktOrange;
+  }
+}
+
+
+.kt-modal {
+  position: fixed;
+  top: 0px;
+  bottom: 0px;
+  left: 0px;
+  right: 0px;
+  background-color: rgba(1,1,1,.3);
+  backdrop-filter: blur(2px);
+  z-index: 10000;
+
+  .inner {
+    width: 300px;
+    background: white;
+    margin: 150px auto auto auto;
+    padding: 10px;
+    border: 5px solid $ktOrange;
+    border-radius: 5px;
+  }
+}
+
+
+.kt-unit-editor {
+  display: grid;
+  grid-template-columns: auto auto;
 }

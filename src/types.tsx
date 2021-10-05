@@ -1,6 +1,7 @@
 
 export interface Weapon {
   name: string;
+  uname: string;
   type: "r"|"m";
   atk: number;
   ws: number;
@@ -32,7 +33,14 @@ export interface Unit {
   }[]
 }
 
+export interface UnitConf {
+  unit: Unit
+  count: number
+  ranged: string
+  melee: string
+}
+
+
 export interface Dict<T> {
   [name:string]: T
 }
-

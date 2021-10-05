@@ -18,8 +18,9 @@ function units(faction:string, kws:string, units:I_Unit[]) : Unit[] {
     var keywords = _kws.concat(kws.split(/, /g));
     var weapons = extra.map((w) : Weapon => {
       if (w[0] === 1 || w[0] === 0) {
+        var uname = w[1].replace(/ \|.*$/,'')
         return {
-          name:w[1], type: (!w[0] ? 'r' : 'm'), atk:w[2], ws:w[3], dam:w[4], cdam:w[5],
+          name:w[1], uname, type: (!w[0] ? 'r' : 'm'), atk:w[2], ws:w[3], dam:w[4], cdam:w[5],
           sr: w[6] || null, cr: w[7] || null
         }
       } else {
@@ -70,7 +71,7 @@ function tau() : Unit[] {
       [0, 'Rail Rifle', 4, 4, 4, 4, 'AP1, Lethal 5+', 'MW2'],
       [1, 'Gun butt', 3, 5, 2, 3]
     ],[
-      "Pathfinder shas'ui", 3, 2, 1, 3, 5, 8, "leaader, pathfinder, shas'ui",
+      "Pathfinder shas'ui", 3, 2, 1, 3, 5, 8, "leader, pathfinder, shas'ui",
       [0, 'Pulse carbine', 4, 3, 4, 5],
       [1, 'Gun butt', 3, 5, 2, 3],
       markerlight
@@ -98,6 +99,6 @@ function tau() : Unit[] {
 
 
 
-export const Compendium = [
-  ...tau()
-]
+export const Compendium = {
+  all: [...tau()]
+}
