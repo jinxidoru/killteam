@@ -2,6 +2,7 @@ $ktOrange: #e6531d;
 $ktGrey: #aaa;
 
 
+
 .kt-controls {
   padding: 10px;
   margin-bottom: 10px;
@@ -241,3 +242,11 @@ $ktGrey: #aaa;
     margin: auto auto 5px;
   }
 }
+
+
+
+.ktg-print-hide {
+  @media print { display: none; }
+}
+
+
