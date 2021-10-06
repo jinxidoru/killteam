@@ -63,14 +63,14 @@ export function CreateRoster(props:{
   }
 
   return <Modal><div className="kt-create">
-    <div>Name:</div><div><input value={name} onChange={e => setName(e.target.value)} /></div>
-    <div style={{textTransform:'capitalize'}}>{clan_label}:</div>
-    <div><input value={clan} onChange={e => setClan(e.target.value)} /></div>
     <div>Faction:</div><div><select value={faction} onChange={e => setFaction(e.target.value)}>
       {Object.entries(Compendium.factions).map(([id,f]) => (
             <option key={id} value={id}>{f.name}</option>
       ))}
     </select></div>
+    <div>Name:</div><div><input value={name} onChange={e => setName(e.target.value)} /></div>
+    <div style={{textTransform:'capitalize'}}>{clan_label}:</div>
+    <div><input value={clan} onChange={e => setClan(e.target.value)} /></div>
     <div className="buttons">
       {render_if(!!props.onCancel, (<button onClick={props.onCancel}>Cancel</button>))}
       <button onClick={create} disabled={!name.trim() || !clan.trim()}>Create</button>
@@ -197,7 +197,7 @@ function DataCard(props:{
                 return (<span key={i}>{x}</span>)
               }
             })}
-            {!w.cr ? null : (<><b>!</b> {w.cr} </>)}
+            {!w.cr ? null : (<> <b>!</b> {w.cr} </>)}
           </div>
         </div>))}
 
