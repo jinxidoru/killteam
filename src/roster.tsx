@@ -176,7 +176,7 @@ function DataCard(props:{
 
   // replace special rules
   return (
-    <div className="kt-unit-info">
+    <div className="kt-data-card">
       <button className="edit" onClick={props.onEdit}>EDIT</button>
       <div className="name">{conf.count ? `( ${conf.count} ) ` : ''}&nbsp;{unit.name}</div>
       <div className="keywords"><b>{unit.faction}</b>{keywords}</div>
