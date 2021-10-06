@@ -1,8 +1,8 @@
 {
   "files": {
-    "main.css": "/killteam/static/css/main.c8f5bebe.chunk.css",
-    "main.js": "/killteam/static/js/main.9f48bc9f.chunk.js",
-    "main.js.map": "/killteam/static/js/main.9f48bc9f.chunk.js.map",
+    "main.css": "/killteam/static/css/main.50592a3a.chunk.css",
+    "main.js": "/killteam/static/js/main.5191b639.chunk.js",
+    "main.js.map": "/killteam/static/js/main.5191b639.chunk.js.map",
     "runtime-main.js": "/killteam/static/js/runtime-main.5fb1b183.js",
     "runtime-main.js.map": "/killteam/static/js/runtime-main.5fb1b183.js.map",
     "static/js/2.967a0856.chunk.js": "/killteam/static/js/2.967a0856.chunk.js",
@@ -10,14 +10,14 @@
     "static/js/3.0b0b6fa7.chunk.js": "/killteam/static/js/3.0b0b6fa7.chunk.js",
     "static/js/3.0b0b6fa7.chunk.js.map": "/killteam/static/js/3.0b0b6fa7.chunk.js.map",
     "index.html": "/killteam/index.html",
-    "static/css/main.c8f5bebe.chunk.css.map": "/killteam/static/css/main.c8f5bebe.chunk.css.map",
+    "static/css/main.50592a3a.chunk.css.map": "/killteam/static/css/main.50592a3a.chunk.css.map",
     "static/js/2.967a0856.chunk.js.LICENSE.txt": "/killteam/static/js/2.967a0856.chunk.js.LICENSE.txt",
     "static/media/bob.scss": "/killteam/static/media/ranged.9405fcde.png"
   },
   "entrypoints": [
     "static/js/runtime-main.5fb1b183.js",
     "static/js/2.967a0856.chunk.js",
-    "static/css/main.c8f5bebe.chunk.css",
-    "static/js/main.9f48bc9f.chunk.js"
+    "static/css/main.50592a3a.chunk.css",
+    "static/js/main.5191b639.chunk.js"
   ]
 }
